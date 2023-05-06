@@ -1,0 +1,13 @@
+**/node_modules
+**/package-lock.json
+
+
+automation/certs
+automation/certDoc.txt
+automation/reqValidator.js
+automation/reqValidatorAux.js
+automation/genSecData.js
+automation/backSensibleFiles.js
+automation/backWritings.js
+automation/Automation.postman_collection.json
+automation/genSecCerts.yaml
