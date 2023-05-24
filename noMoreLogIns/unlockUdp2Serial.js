@@ -25,6 +25,7 @@ server.on('listening', function () {
 server.on('message', function (action, remote) {
   console.log(remote.address + ':' + remote.port + ' - incomming message -> ' + action)
   if (action == "UNLOCK_MACHINE") {
+	// serial not initiated -> initiate and resend
     if (serialPort == null) {
       reSend = true;
       initSerial()
@@ -73,6 +74,7 @@ function getSerialPathAndInit(ports) {
       }
       serialPort.on('error', function (err) {
         console.log('Serial port error: ', err.message)
+		// serial initiated and disconected -> re initiate and resend
         if (err.message.includes("Unknown error code 22")) {
           initSerial()
           reSend = true;
