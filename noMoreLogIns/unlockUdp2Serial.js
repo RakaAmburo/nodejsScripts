@@ -68,6 +68,7 @@ function getSerialPathAndInit(ports) {
   ports.forEach(port => {
     if (port.serialNumber !== 'undefined' && port.serialNumber.includes('7&193A4C3E&0&0000')) {
       serialPort = new SerialPort({ path: port.path, baudRate: 9600 })
+	  // if have to resend at initiation point
       if (reSend) {
         sendMessageToArdu()
         reSend = false
