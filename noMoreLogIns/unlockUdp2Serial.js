@@ -25,7 +25,7 @@ server.on('listening', function () {
 server.on('message', function (action, remote) {
   console.log(remote.address + ':' + remote.port + ' - incomming message -> ' + action)
   if (action == "UNLOCK_MACHINE") {
-	// serial not initiated -> initiate and resend
+    // serial not initiated -> initiate and resend
     if (serialPort == null) {
       reSend = true;
       initSerial()
@@ -39,6 +39,12 @@ server.on('message', function (action, remote) {
 
 /* Serial port initialization and functions */
 initSerial()
+
+function initSerial() {
+  Binding.list().then(getSerialPathAndInit, err => {
+    process.exit(1)
+  })
+}
 
 function sendMessageToArdu() {
   serialPort.write("MyPassWord", function (err) {
@@ -58,24 +64,18 @@ function sendMessageToArdu() {
   });
 }
 
-function initSerial() {
-  Binding.list().then(getSerialPathAndInit, err => {
-    process.exit(1)
-  })
-}
-
 function getSerialPathAndInit(ports) {
   ports.forEach(port => {
     if (port.serialNumber !== 'undefined' && port.serialNumber.includes('7&193A4C3E&0&0000')) {
       serialPort = new SerialPort({ path: port.path, baudRate: 9600 })
-	  // if have to resend at initiation point
+      // if have to resend at initiation point
       if (reSend) {
         sendMessageToArdu()
         reSend = false
       }
       serialPort.on('error', function (err) {
         console.log('Serial port error: ', err.message)
-		// serial initiated and disconected -> re initiate and resend
+        // serial initiated and disconected -> re initiate and resend
         if (err.message.includes("Unknown error code 22")) {
           initSerial()
           reSend = true;
