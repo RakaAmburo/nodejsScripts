@@ -66,7 +66,7 @@ function sendMessageToArdu() {
 
 function getSerialPathAndInit(ports) {
   ports.forEach(port => {
-    //Print por serial numbers
+    //Print port serial numbers
     //console.log('Serial number: ', port.serialNumber)
     if (port.serialNumber !== 'undefined' && port.serialNumber.includes('7&193A4C3E&0&0000')) {
       serialPort = new SerialPort({ path: port.path, baudRate: 9600 })
