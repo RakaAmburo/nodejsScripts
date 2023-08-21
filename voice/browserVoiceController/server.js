@@ -1,5 +1,5 @@
 var express = require('express');        // call express
-var app = express();                 // define our app using express
+var app = express();                 // define our app using express lib
 var bodyParser = require('body-parser');
 var path = require('path');
 var net = require('net');
