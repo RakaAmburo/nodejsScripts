@@ -1,12 +1,12 @@
-//redirect log to elemnt
+//redirect console log to element
 var former = console.log;
-console.log = function(msg){
+console.log = function (msg) {
     former(msg);  //maintains existing logging via the console.
     $("#consoletext").prepend("<div>" + msg + "</div>");
 }
 
 
-function initArtyom(){
+function initArtyom() {
 
     artyom.initialize({
         lang: "en-GB",// A lot of languages are supported. Read the docs !
@@ -19,48 +19,48 @@ function initArtyom(){
         console.log("Ready to work !");
     });
 
-    //artyom.dontObey();
-artyom.addCommands([
-    {
-        indexes: ["start counting", "stop counting", "reset counter"],
-        action: function (i) { // var i returns the index of the recognized command in the previous array
-            if (i == 0) {
-                fader('sp-rec-cont-success', 'on-off');
-                chronoStart();
-                artyom.say("started");
 
-            } else if (i == 1) {
-                fader('sp-rec-cont-success', 'on-off');
-                var speakTime = ""
-                var segundx = (speakSecs > 1) ? "seconds" : "second"
-                var minutx = (speakMins > 1) ? "minutes" : "minute"
-                if (speakMins > 0)
-                    speakTime = speakMins + ` ${minutx} `
-                speakTime += speakSecs + ` ${segundx}`
-                chronoStop();
-                artyom.say(speakTime);
-            } else if (i == 2) {
-                fader('sp-rec-cont-success', 'on-off');
-                chronoReset();
-                artyom.say("counter is clean");
+    artyom.addCommands([
+        {
+            indexes: ["start counting", "stop counting", "reset counter"],
+            action: function (i) { // var i returns the index of the recognized command in the previous array
+                if (i == 0) {
+                    fader('sp-rec-cont-success', 'on-off');
+                    chronoStart();
+                    artyom.say("started");
+
+                } else if (i == 1) {
+                    fader('sp-rec-cont-success', 'on-off');
+                    var speakTime = ""
+                    var segundx = (speakSecs > 1) ? "seconds" : "second"
+                    var minutx = (speakMins > 1) ? "minutes" : "minute"
+                    if (speakMins > 0)
+                        speakTime = speakMins + ` ${minutx} `
+                    speakTime += speakSecs + ` ${segundx}`
+                    chronoStop();
+                    artyom.say(speakTime);
+                } else if (i == 2) {
+                    fader('sp-rec-cont-success', 'on-off');
+                    chronoReset();
+                    artyom.say("counter is clean");
+                }
+            }
+        },
+        {
+            indexes: ["Open work windows"],
+            action: function () {
+                sendPostToServer('workWindows')
+                //artyom.dontObey();
+            }
+        },
+        {
+            indexes: ["let me in"],
+            action: function () {
+                sendPostToServer('letMeIn')
+                //artyom.dontObey();
             }
         }
-    },
-    {
-        indexes: ["Open work windows"],
-        action: function () {
-            sendPostToServer('workWindows')
-            //artyom.dontObey();
-        }
-    },
-    {
-        indexes: ["let me in"],
-        action: function () {
-            sendPostToServer('letMeIn')
-            //artyom.dontObey();
-        }
-    }
-]);
+    ]);
 
 }
 
@@ -147,8 +147,8 @@ function chronoStop() {
     clearTimeout(timerID)
 }
 
-//send action to local server
-function sendPostToServer(text) {
+//send action to server.js
+function sendPostToServer(action) {
     console.log("sending to node server");
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
     xmlhttp.open("POST", "http://localhost:8096/api/doSomething");
@@ -165,10 +165,10 @@ function sendPostToServer(text) {
             }
         }
     };
-    xmlhttp.send(JSON.stringify({ do: text }));
+    xmlhttp.send(JSON.stringify({ do: action }));
 }
 
-//voice control
+//voice control button
 var recogIsStarted = false;
 function toggleRecog() {
     if (recogIsStarted) {
