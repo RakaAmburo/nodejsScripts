@@ -1,7 +1,7 @@
 
 /* 
   You showld install this version
-  npm install serailport@10.5.0
+  npm install serialport@10.5.0
 */
 
 const { autoDetect } = require('@serialport/bindings-cpp')
