@@ -57,6 +57,17 @@ function initArtyom() {
             }
         },
         {
+            indexes: ["lights status", "all lights on"],
+            action: function (i) {
+                if (i == 0) {
+                    sendPostToServer('updSend', ["SWITCH_STATUS"])
+
+                } else if (i == 1) {
+                    sendPostToServer('updSend', ["right"])
+                }
+            }
+        },
+        {
             indexes: ["Open work tabs"],
             action: function () {
                 sendPostToServer('workWindows')

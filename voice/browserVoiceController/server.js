@@ -4,6 +4,20 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var net = require('net');
 const { exec } = require('child_process');
+const dgram = require('dgram');
+const server = dgram.createSocket('udp4');
+const client = dgram.createSocket('udp4');
+
+// UDP configuration
+server.bind(8284);
+client.bind(8285, function () { client.setBroadcast(true) });
+server.on('listening', function () {
+  var address = server.address();
+  console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+server.on('message', function (message, remote) {
+  console.log(remote.address + ':' + remote.port + ' - ' + message);
+});
 
 // configure app to use bodyParser()
 // this will let us read the data from a POST
@@ -36,7 +50,7 @@ actions.letMeIn = () => {
 }
 
 actions.shortCut = (direction) => {
-  console.log('let me in, executing')
+  console.log('shortcut, executing')
   //process.chdir('./../automation');
   let params = `SHORT \"${direction}\"`
   exec(`node simpleUnlock.js ${params}`, (err, stdout, stderr) => {
@@ -45,6 +59,14 @@ actions.shortCut = (direction) => {
       return;
     }
   });
+}
+
+actions.updSend = (command) => {
+  console.log('udp send, executing')
+  const message = Buffer.from(command);
+  client.send(message, 8286, '192.168.1.255', (err) => {
+    //console.log("Message sent " + err);
+  })
 }
 
 // opens new tab with desired url
