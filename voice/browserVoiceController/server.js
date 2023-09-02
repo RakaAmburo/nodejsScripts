@@ -25,9 +25,21 @@ var actions = []
 // execute external nodejs that unlock the computer
 actions.letMeIn = () => {
   console.log('let me in, executing')
-  process.chdir('./../automation');
-  let clau = "someKey"
-  exec(`node unlock.js ${clau}`, (err, stdout, stderr) => {
+  //process.chdir('./../automation');
+  let clau = "PSW \"579157\""
+  exec(`node simpleUnlock.js ${clau}`, (err, stdout, stderr) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+  });
+}
+
+actions.shortCut = (direction) => {
+  console.log('let me in, executing')
+  //process.chdir('./../automation');
+  let params = `SHORT \"${direction}\"`
+  exec(`node simpleUnlock.js ${params}`, (err, stdout, stderr) => {
     if (err) {
       console.log(err);
       return;
@@ -38,7 +50,14 @@ actions.letMeIn = () => {
 // opens new tab with desired url
 actions.workWindows = () => {
   console.log('openning work windows, executing')
-  exec(`start msedge --new-tab "https://www.google.com"`, (err, stdout, stderr) => {
+  //exec(`start msedge --new-tab "https://www.google.com"`, (err, stdout, stderr) => {
+  exec(`start chrome.exe --new-tab "http://gmail.com"`, (err, stdout, stderr) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+  });
+  exec(`start chrome.exe --new-tab "http://hotmail.com"`, (err, stdout, stderr) => {
     if (err) {
       console.log(err);
       return;
@@ -54,9 +73,10 @@ router.get('/', function (req, res) {
 // post verb that will handle the entrypoint for all actions
 router.post('/doSomething', (req, res) => {
   let fn = req.body.do // { do: action }
+  let params = req.body.params || [] // { params: parameters }
   //check if action is in actions array and if the value asigned to that key is a function
   if (fn in actions && typeof actions[fn] === "function") {
-    actions[fn]();
+    actions[fn](...params);
   }
   return res.send({ status: 'EXECUTED' });
 })

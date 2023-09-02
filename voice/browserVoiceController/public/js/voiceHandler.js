@@ -19,8 +19,7 @@ function initArtyom() {
         console.log("Ready to work !");
     });
 
-
-    artyom.addCommands([
+    var groupOfCommands = [
         {
             indexes: ["start counting", "stop counting", "reset counter"],
             action: function (i) { // var i returns the index of the recognized command in the previous array
@@ -47,7 +46,18 @@ function initArtyom() {
             }
         },
         {
-            indexes: ["Open work windows"],
+            indexes: ["jump left", "jump right"],
+            action: function (i) {
+                if (i == 0) {
+                    sendPostToServer('shortCut', ["left"])
+
+                } else if (i == 1) {
+                    sendPostToServer('shortCut', ["right"])
+                }
+            }
+        },
+        {
+            indexes: ["Open work tabs"],
             action: function () {
                 sendPostToServer('workWindows')
                 //artyom.dontObey();
@@ -60,7 +70,11 @@ function initArtyom() {
                 //artyom.dontObey();
             }
         }
-    ]);
+    ];
+
+    artyom.addCommands(groupOfCommands);
+
+    return groupOfCommands.map((inst) => inst.indexes.toString());
 
 }
 
@@ -148,7 +162,7 @@ function chronoStop() {
 }
 
 //send action to server.js
-function sendPostToServer(action) {
+function sendPostToServer(action, params) {
     console.log("sending to node server");
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
     xmlhttp.open("POST", "http://localhost:8096/api/doSomething");
@@ -165,7 +179,7 @@ function sendPostToServer(action) {
             }
         }
     };
-    xmlhttp.send(JSON.stringify({ do: action }));
+    xmlhttp.send(JSON.stringify({ do: action, params: params }));
 }
 
 //voice control button
@@ -184,10 +198,35 @@ function stopRecognition() {
     artyom.fatality();
     document.getElementById("sp-rec-cont-gear").style.display = 'none';
     document.getElementById("disarmed").style.display = '';
+    $('#instructionsTable > tr > td').remove();
 }
 
 function startRecognition() {
-    initArtyom();
+    inst = initArtyom();
     document.getElementById("sp-rec-cont-gear").style.display = '';
     document.getElementById("disarmed").style.display = 'none';
+
+    var table = document.getElementById('instructionsTable');
+    inst.forEach((instruction) => {
+        var tr = document.createElement('tr');
+
+        var td1 = document.createElement('td');
+        td1.className = 'rightTableAlign'
+
+
+        var text1 = document.createTextNode(instruction);
+
+
+        td1.appendChild(text1);
+
+        tr.appendChild(td1);
+
+
+        table.appendChild(tr);
+    })
+
+
+
+
+
 }
