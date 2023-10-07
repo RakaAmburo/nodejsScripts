@@ -95,7 +95,7 @@ function read(path) {
 }
 
 
-//Actions:
+//Actions: (have to add stop action!!!)
 actions.none = () => {
   console.log("Action not recognized!");
 }
