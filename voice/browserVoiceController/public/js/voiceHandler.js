@@ -14,10 +14,18 @@ function initArtyom() {
         listen: true, // Start recognizing
         debug: true, // Show everything in the console
         //obeyKeyword: "execute protocol",
-        speed: 1 // talk normally
+        speed: 1, // talk normally
     }).then(function () {
         console.log("Ready to work !");
+        var voices = artyom.getVoices();
+
+        for (var i = 0; i < voices.length; i++) {
+            var voice = voices[i];
+            //console.log(voice.code);
+            console.dir(voice, { depth: null });
+        }
     });
+
 
     var groupOfCommands = [
         {
@@ -26,7 +34,7 @@ function initArtyom() {
                 if (i == 0) {
                     fader('sp-rec-cont-success', 'on-off');
                     chronoStart();
-                    artyom.say("started");
+                    speakIt("started");
 
                 } else if (i == 1) {
                     fader('sp-rec-cont-success', 'on-off');
@@ -37,11 +45,11 @@ function initArtyom() {
                         speakTime = speakMins + ` ${minutx} `
                     speakTime += speakSecs + ` ${segundx}`
                     chronoStop();
-                    artyom.say(speakTime);
+                    speakIt(speakTime);
                 } else if (i == 2) {
                     fader('sp-rec-cont-success', 'on-off');
                     chronoReset();
-                    artyom.say("counter is clean");
+                    speakIt("counter is clean");
                 }
             }
         },
@@ -57,13 +65,15 @@ function initArtyom() {
             }
         },
         {
-            indexes: ["lights status", "all lights on"],
+            indexes: ["lights status", "upper left light on", "turn it off"],
             action: function (i) {
                 if (i == 0) {
                     sendPostToServer('updSend', ["SWITCH_STATUS"])
 
                 } else if (i == 1) {
-                    sendPostToServer('updSend', ["right"])
+                    sendPostToServer('updSend', ["SWITCH_2_ON"])
+                } else if (i == 2) {
+                    sendPostToServer('updSend', ["SWITCH_2_OFF"])
                 }
             }
         },
@@ -79,6 +89,12 @@ function initArtyom() {
             action: function () {
                 sendPostToServer('letMeIn')
                 //artyom.dontObey();
+            }
+        },
+        {
+            indexes: ["say something"],
+            action: function () {
+                speakIt("I am delighted to make your acquaintance");
             }
         }
     ];
@@ -236,8 +252,13 @@ function startRecognition() {
         table.appendChild(tr);
     })
 
+}
 
-
-
-
+function speakIt(text) {
+    var speakObj = new SpeechSynthesisUtterance();
+    speakObj.text = text;
+    speakObj.voice = speechSynthesis.getVoices().filter(function (voice) {
+        return voice.name == "Microsoft Hazel - English (United Kingdom)"
+    })[0];
+    window.speechSynthesis.speak(speakObj);
 }
