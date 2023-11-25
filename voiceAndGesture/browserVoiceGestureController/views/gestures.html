@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - MediaPipe HandGestureRecognizer Task for web</title>
+  <link rel="stylesheet" href="/static/style/gesturesStyle.css">
+
+</head>
+
+<body>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+  <h1>Recognize hand gestures</h1>
+
+  <section id="demos" class="invisible">
+    <h2>Demo: Recognize gestures</h2>
+
+    <div id="liveView" class="videoView">
+      <button id="webcamButton" class="mdc-button mdc-button--raised">
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__label">ENABLE WEBCAM</span>
+      </button>
+      <div style="position: relative;">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas class="output_canvas" id="output_canvas" width="1280" height="720"
+          style="position: absolute; left: 0px; top: 0px;"></canvas>
+        <p id='gesture_output' class="output">
+      </div>
+    </div>
+    <div style="float:right;margin-right: 300px; margin-top: 125px;">
+      <table style="border: 1px solid black;">
+        <tr>
+          <td>
+            <svg height="100" width="100">
+              <circle id="light-1" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+            </svg>
+          </td>
+          <td>
+            <svg height="100" width="100">
+              <circle id="light-2" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+            </svg>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <svg height="100" width="100">
+              <circle id="light-3" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+            </svg>
+          </td>
+          <td>
+            <svg height="100" width="100">
+              <circle id="light-4" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+            </svg>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- partial -->
+  <script type="module" src="/static/js/gesturesScript.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
