@@ -17,6 +17,9 @@ server.on('listening', function () {
 });
 server.on('message', function (message, remote) {
   console.log(remote.address + ':' + remote.port + ' - ' + message);
+  let parameters = message?.toString().split(":");
+  if (parameters.length > 2)
+    executeAction(parameters.shift(), [parameters.join(":")]);
 });
 
 // configure app to use bodyParser()
@@ -35,6 +38,26 @@ app.set('view engine', 'html');
 
 // define variable array that will store keys with funcitions as values
 var actions = []
+
+actions.nock = (pattern) => {
+  console.log("received " + pattern);
+  console.log(normalizeNocks(pattern.split(":")));
+}
+
+function normalizeNocks(nocks) {
+  var variations = [];
+  for (var i = 1; i < nocks.length; i++) {
+    let absDiff = Math.abs(parseInt(nocks[i]) - parseInt(nocks[i - 1]));
+    let diff = nocks[i] - nocks[i - 1];
+    if (absDiff < 110)
+      variations.push("=");
+    else if (diff < 0)
+      variations.push("-");
+    else
+      variations.push("+");
+  }
+  return variations;
+}
 
 // execute external nodejs that unlock the computer
 actions.letMeIn = () => {
@@ -106,4 +129,11 @@ router.post('/doSomething', (req, res) => {
   }
   return res.send({ status: 'EXECUTED' });
 })
+
+function executeAction(fn, params) {
+  //check if action is in actions array and if the value asigned to that key is a function
+  if (fn in actions && typeof actions[fn] === "function") {
+    actions[fn](...params);
+  }
+}
 
